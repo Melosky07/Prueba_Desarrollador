@@ -1,9 +1,6 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from rest_framework.decorators import api_view
-from rest_framework.response import Response    
-from rest_framework import status
 
 class Session(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -14,8 +11,9 @@ class Session(models.Model):
 
     @property
     def session_duration(self):
+       
         if self.end_time:
-            return (self.end_time - self.start_time).total_seconds() / 60 
+            return (self.end_time - self.start_time).total_seconds() / 60  
         return None
 
     def __str__(self):
@@ -23,5 +21,8 @@ class Session(models.Model):
 
 class ButtonClick(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
-    button_number = models.IntegerField()
+    button_number = models.IntegerField()  # Número del botón (1 o 2)
     click_time = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Button {self.button_number} click at {self.click_time} for session {self.session.id}"
